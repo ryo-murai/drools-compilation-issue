@@ -1,0 +1,37 @@
+package rules
+
+import java.util.List
+
+import com.sample.droolsissue.models.Product
+import com.sample.droolsissue.models.OrderLine
+
+global List<Product> discountProducts
+
+rule "discount product using bound variable to access a nested property"
+
+    when
+		$orderLine: OrderLine($product: product)
+
+		Product(
+			asin == $orderLine.product.asin || category == $product.category
+		) from discountProducts
+
+    then
+		System.out.println(drools.getRule().getName());
+
+end
+
+
+rule "discount product if ASIN is the same"
+
+    when
+		$orderLine: OrderLine()
+
+		Product(
+			asin == $orderLine.product.asin
+		) from discountProducts
+
+    then
+		System.out.println(drools.getRule().getName());
+
+end

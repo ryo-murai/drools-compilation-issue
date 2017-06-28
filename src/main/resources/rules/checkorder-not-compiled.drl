@@ -1,0 +1,22 @@
+package rules
+
+import java.util.List
+
+import com.sample.droolsissue.models.Product
+import com.sample.droolsissue.models.OrderLine
+
+global List<Product> discountProducts
+
+rule "discount product using double nested propety"
+
+    when
+		$orderLine: OrderLine()
+
+		Product(
+			asin == $orderLine.product.asin || category == $orderLine.product.category
+		) from discountProducts
+
+    then
+		System.out.println("discount");
+
+end
