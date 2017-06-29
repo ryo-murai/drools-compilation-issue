@@ -1,7 +1,7 @@
 package com.sample.droolsissue.models;
 
 public interface Product {
-	String getAsin();
+	String getId();
 
 	String getTitle();
 

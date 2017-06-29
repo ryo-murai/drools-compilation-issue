@@ -7,13 +7,13 @@ import com.sample.droolsissue.models.OrderLine
 
 global List<Product> discountProducts
 
-rule "discount product using bound variable to access a nested property"
+rule "discount product if id or category is included in the discount list(use bound variable for id)"
 
     when
 		$orderLine: OrderLine($product: product)
 
 		Product(
-			asin == $orderLine.product.asin || category == $product.category
+			id == $product.id || category == $orderLine.product.category
 		) from discountProducts
 
     then
@@ -21,17 +21,45 @@ rule "discount product using bound variable to access a nested property"
 
 end
 
+rule "discount product if id or category is included in the discount list(use bound variable for category)"
 
-rule "discount product if ASIN is the same"
+    when
+		$orderLine: OrderLine($product: product)
+
+		Product(
+			id == $orderLine.product.id || category == $product.category
+		) from discountProducts
+
+    then
+		System.out.println(drools.getRule().getName());
+
+end
+
+rule "discount product if product id is in the discount list"
 
     when
 		$orderLine: OrderLine()
 
 		Product(
-			asin == $orderLine.product.asin
+			id == $orderLine.product.id
 		) from discountProducts
 
     then
 		System.out.println(drools.getRule().getName());
 
 end
+
+rule "discount order if category is included in the discount list"
+
+    when
+		$orderLine: OrderLine()
+
+		Product(
+			category == $orderLine.product.category
+		) from discountProducts
+
+    then
+		System.out.println(drools.getRule().getName());
+
+end
+

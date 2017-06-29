@@ -7,16 +7,16 @@ import com.sample.droolsissue.models.OrderLine
 
 global List<Product> discountProducts
 
-rule "discount product using double nested propety"
+rule "discount product if id or category is included in the discount list"
 
     when
 		$orderLine: OrderLine()
 
 		Product(
-			asin == $orderLine.product.asin || category == $orderLine.product.category
+			id == $orderLine.product.id || category == $orderLine.product.category
 		) from discountProducts
 
     then
-		System.out.println("discount");
+		System.out.println(drools.getRule().getName());
 
 end

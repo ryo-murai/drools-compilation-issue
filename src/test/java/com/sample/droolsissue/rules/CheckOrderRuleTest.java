@@ -1,6 +1,7 @@
 package com.sample.droolsissue.rules;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -13,43 +14,78 @@ import org.kie.internal.utils.KieHelper;
 
 import com.sample.droolsissue.models.Book;
 import com.sample.droolsissue.models.BookOrderLine;
+import com.sample.droolsissue.models.Product;
 
 public class CheckOrderRuleTest {
 
 	@Test
-	public void test() {
-		Book orderedBook = Book.builder()
-						.asin("XX123456789")
-						.category("Books > Novel")
-						.title("xxxxxxxxxxx")
-						.price(1200)
-						.ISBN("111-1234567890-8")
-						.build();
+	public void testCompilationSucceed() {
+		KieBase kieBase = createKieBase("rules/checkorder.drl");
 
-		BookOrderLine orderLine1 =
-			BookOrderLine.builder()
-				.product(orderedBook)
-				.amount(1)
-				.build();
+		KieSession kieSession = kieBase.newKieSession();
+		try {
+			kieSession.insert(createFact());
+			kieSession.setGlobal("discountProducts", createDiscountProducts());
 
-		String drlPath = "rules/checkorder.drl";
-		//String drlPath = "rules/checkorder-not-compiled.drl";
+			kieSession.fireAllRules();
+		} finally {
+			kieSession.dispose();
+		}
+	}
+
+	@Test
+	public void testCompilationFail() {
+		KieBase kieBase = createKieBase("rules/checkorder-not-compiled.drl");
+
+		KieSession kieSession = kieBase.newKieSession();
+		try {
+			kieSession.insert(createFact());
+			kieSession.setGlobal("discountProducts", createDiscountProducts());
+
+			kieSession.fireAllRules();
+		} finally {
+			kieSession.dispose();
+		}
+	}
+
+	private KieBase createKieBase(String drlPath) {
 		KieHelper kieHelper = new KieHelper();
 		kieHelper.addResource(ResourceFactory.newClassPathResource(drlPath), ResourceType.DRL);
 
 		Results results = kieHelper.verify();
-		if(results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)) {
+		if (results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)) {
 			System.out.println(results);
 		}
 
-		KieBase kieBase = kieHelper.build();
-		KieSession kieSession = kieBase.newKieSession();
-
-		kieSession.insert(orderLine1);
-		kieSession.setGlobal("discountProducts", Arrays.asList(orderedBook));
-		kieSession.fireAllRules();
-
-		kieSession.dispose();
+		return kieHelper.build();
 	}
 
+	private BookOrderLine createFact() {
+		Book orderedBook =
+			Book.builder()
+				.id("XX123456789")
+				.category("Books > Novel")
+				.title("xxxxxxxxxxx")
+				.price(1200)
+				.ISBN("111-1234567890-8")
+				.build();
+
+		return
+			BookOrderLine.builder()
+				.product(orderedBook)
+				.amount(1)
+				.build();
+	}
+
+	private List<Product> createDiscountProducts() {
+		Book orderedBook =
+				Book.builder()
+					.id("XX123456789")
+					.category("Books > Novel")
+					.title("xxxxxxxxxxx")
+					.price(1200)
+					.ISBN("111-1234567890-8")
+					.build();
+		return Arrays.asList(orderedBook);
+	}
 }
