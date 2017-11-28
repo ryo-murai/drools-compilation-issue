@@ -24,13 +24,13 @@
 		<dependency>
 			<groupId>org.kie</groupId>
 			<artifactId>kie-api</artifactId>
-			<version>6.5.0.Final</version>
+			<version>${brms.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
-			<version>6.5.0.Final</version>
+			<version>${brms.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -40,6 +40,14 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- fixed version of mvel -->
+		<!--
+		<dependency>
+			 <groupId>org.mvel</groupId>
+			 <artifactId>mvel2</artifactId>
+			 <version>2.3.2.Final</version>
+		</dependency>
+		-->
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -50,6 +58,7 @@
 	</dependencies>
 
 	<properties>
+		<brms.version>6.5.0.Final</brms.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java-version>1.8</java-version>
 		<java.version>1.8</java.version>
