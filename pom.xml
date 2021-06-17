@@ -58,7 +58,7 @@
 	</dependencies>
 
 	<properties>
-		<brms.version>7.4.1.Final</brms.version>
+		<brms.version>7.55.0.Final</brms.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java-version>1.8</java-version>
 		<java.version>1.8</java.version>
